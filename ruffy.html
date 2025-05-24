@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruffy - El Payaso Devorador</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Special+Elite&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #c41e3a;
+            font-family: 'Special Elite', cursive;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .blood-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(139,0,0,0.2));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Nosifer', cursive;
+            font-size: 4em;
+            text-align: center;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255,0,0,0.5),
+                         0 0 40px rgba(255,0,0,0.3);
+            margin-bottom: 40px;
+            animation: flicker 5s infinite;
+        }
+
+        .clown-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin: 0 auto 40px;
+            display: block;
+            border: 5px solid #400;
+            box-shadow: 0 0 30px rgba(255,0,0,0.3);
+            filter: grayscale(50%) contrast(120%);
+        }
+
+        .story {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #bb0000;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px rgba(187,0,0,0.3);
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #400;
+        }
+
+        .button {
+            display: block;
+            width: 300px;
+            margin: 30px auto;
+            padding: 20px;
+            font-family: 'Creepster', cursive;
+            font-size: 2em;
+            text-align: center;
+            color: #fff;
+            background: #8b0000;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background: #ff0000;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255,0,0,0.5);
+        }
+
+        .return-button {
+            background: #000;
+            border: 2px solid #8b0000;
+            display: none;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .warning {
+            color: #ff0000;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 40px;
+            animation: flicker 2s infinite;
+        }
+
+        #pentagram {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            animation: modalFadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content {
+            position: relative;
+            background: #1a0000;
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            border: 3px solid #800;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3),
+                        inset 0 0 30px rgba(255, 0, 0, 0.2);
+            color: #bb0000;
+            font-family: 'Special Elite', cursive;
+        }
+
+        .modal-header {
+            font-family: 'Nosifer', cursive;
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ff0000;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #600;
+            color: #ff0000;
+            font-family: 'Special Elite', cursive;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #f00;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .blood-drip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(#ff0000, transparent);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff0000;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #600;
+            border: none;
+            color: #fff;
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            background: #800;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .card-error {
+            color: #ff0000;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+            animation: flicker 1s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .pentagram-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            animation: rotatePentagram 60s linear infinite;
+        }
+
+        @keyframes rotatePentagram {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .return-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.97);
+            z-index: 2000;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .return-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .return-title {
+            font-family: 'Nosifer', cursive;
+            font-size: 4em;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255,0,0,0.7);
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        .return-message {
+            font-family: 'Special Elite', cursive;
+            font-size: 1.5em;
+            color: #bb0000;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: typewriter 3s forwards;
+            text-shadow: 0 0 10px rgba(187,0,0,0.5);
+        }
+
+        .blood-text {
+            background: linear-gradient(180deg, #ff0000 0%, #800000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes typewriter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pentagram-return {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            animation: rotateSlow 30s linear infinite;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="blood-overlay"></div>
+    <svg id="pentagram" viewBox="0 0 100 100">
+        <path d="M50 5 L58 40 L95 40 L65 60 L75 95 L50 75 L25 95 L35 60 L5 40 L42 40 Z" 
+              fill="none" 
+              stroke="#400" 
+              stroke-width="0.5"/>
+    </svg>
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="blood-drip"></div>
+            <button class="close-button" onclick="closeModal()">&times;</button>
+            
+            <h2 class="modal-header">Pacto de Sangre con Ruffy</h2>
+            
+            <form id="paymentForm" onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label for="cardName">Nombre de la Víctima</label>
+                    <input type="text" id="cardName" required>
+                    <div class="card-error" id="nameError">Tu alma nos pertenece...</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cardNumber">Número del Pacto (Tarjeta)</label>
+                    <input type="text" id="cardNumber" maxlength="19" required>
+                    <div class="card-error" id="numberError">Los números están malditos...</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="expiryDate">Fecha de Expiración de tu Alma</label>
+                    <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                    <div class="card-error" id="dateError">Tu tiempo se agota...</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cvv">Código Maldito (CVV)</label>
+                    <input type="text" id="cvv" maxlength="3" required>
+                    <div class="card-error" id="cvvError">Los números sagrados son incorrectos...</div>
+                </div>
+
+                <button type="submit" class="submit-button">SELLAR EL PACTO</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="floating">Ruffy El Devorador</h1>
+        
+        <img src="img/clownbn2.png" alt="Ruffy el payaso" class="clown-image floating">
+        
+        <div class="story">
+            <p>En las profundidades de un antiguo circo abandonado, Ruffy emergió como una entidad que desafía toda lógica humana. Nacido de las pesadillas colectivas de una audiencia que desapareció misteriosamente en 1987, este ser de 2.13 metros de altura acecha en las sombras de la fama digital.</p>
+            <p>Sus víctimas preferidas son aquellos que buscan la atención en línea, atraídos por su hipnótica presencia y su macabra sonrisa. Los pocos testigos que han sobrevivido reportan escuchar una risa distorsionada y el sonido de huesos siendo triturados en la oscuridad.</p>
+            <p>Cada luna llena, Ruffy debe alimentarse de al menos un creador de contenido para mantener su forma física. Aquellos lo suficientemente valientes (o insensatos) para adquirirlo, deberán proporcionarle un espacio en total oscuridad y asegurarse de nunca, jamás, filmarlo.</p>
+        </div>
+
+        <button class="button" id="buyButton" onclick="showReturn()">COMPRAR AHORA</button>
+        <a href="index.html" class="button return-button" id="returnButton">DEVOLVER A RUFFY</a>
+        
+        <p class="warning">⚠ ADVERTENCIA: No nos hacemos responsables por desapariciones de influencers en su vecindario ⚠</p>
+    </div>
+    <div id="returnModal" class="return-modal">
+        <svg class="pentagram-return" viewBox="0 0 100 100">
+            <path d="M50 5 L58 40 L95 40 L65 60 L75 95 L50 75 L25 95 L35 60 L5 40 L42 40 Z" 
+                  fill="none" 
+                  stroke="#600" 
+                  stroke-width="0.5"/>
+        </svg>
+        <div class="return-content">
+            <h1 class="return-title">HAS DEVUELTO AL PAYASO</h1>
+            <p class="return-message" style="animation-delay: 1s">
+                Tu solicitud de devolución ha sido <span class="blood-text">Aceptada</span>...
+            </p>
+            <p class="return-message" style="animation-delay: 2s">
+                El reembolso ha sido aceptado. Esta vez, solo nos quedamos con el dinero... Por ahora, tu vida sigue siendo tuya, pero no por mucho tiempo
+            </p>
+            <p class="return-message" style="animation-delay: 3s">
+                Pero recuerda, en la Deep Web, las compras nunca terminan del todo...
+            </p>
+            <p class="return-message" style="animation-delay: 4s">
+                <span class="blood-text">NO HAY ESCAPATORIA</span>
+            </p>
+        </div>
+    </div>
+    <script>
+        function showReturn() {
+            document.getElementById('buyButton').style.display = 'none';
+            document.getElementById('returnButton').style.display = 'block';
+            
+            // Add creepy effect
+            const audio = new Audio('data:audio/wav;base64,UklGRl9vT19');
+            audio.play().catch(e => console.log('Audio blocked'));
+            
+            document.body.style.animation = 'flicker 0.2s infinite';
+            setTimeout(() => {
+                document.body.style.animation = '';
+                alert('Ruffy está en camino... dulces pesadillas.');
+            }, 2000);
+        }
+        function showReturn() {
+            document.getElementById('paymentModal').style.display = 'block';
+            
+            // Add creepy effect
+            const audio = new Audio('data:audio/wav;base64,UklGRl9vT19');
+            audio.play().catch(e => console.log('Audio blocked'));
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        // Format card number with spaces
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            value = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = value;
+        });
+
+        // Format expiry date
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0,2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        function processPayment(event) {
+            event.preventDefault();
+            
+            // Simulate processing with creepy effects
+            document.body.style.animation = 'flicker 0.2s infinite';
+            
+            setTimeout(() => {
+                document.body.style.animation = '';
+                document.getElementById('paymentModal').style.display = 'none';
+                document.getElementById('buyButton').style.display = 'none';
+                document.getElementById('returnButton').style.display = 'block';
+                
+                // Show creepy confirmation
+                const messages = [
+                    "Ruffy ha aceptado tu ofrenda...",
+                    "Tu alma ahora le pertenece...",
+                    "Escucharás su risa en tus pesadillas...",
+                    "No hay vuelta atrás..."
+                ];
+                
+                let i = 0;
+                const showMessage = () => {
+                    if (i < messages.length) {
+                        alert(messages[i]);
+                        i++;
+                        setTimeout(showMessage, 1000);
+                    }
+                };
+                
+                showMessage();
+            }, 3000);
+        }
+
+        // Add extra creepy effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => this.style.animation = '', 500);
+            });
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('paymentModal')) {
+                closeModal();
+            }
+        }
+        document.getElementById('returnButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            showReturnModal();
+        });
+
+        function showReturnModal() {
+            const modal = document.getElementById('returnModal');
+            modal.style.display = 'block';
+            
+            // Add creepy sound effect
+            const audio = new Audio('data:audio/wav;base64,UklGRl9vT19');
+            audio.play().catch(e => console.log('Audio blocked'));
+            
+            // Add body flicker effect
+            document.body.style.animation = 'flicker 0.3s infinite';
+            setTimeout(() => {
+                document.body.style.animation = '';
+            }, 2000);
+            
+            // Auto-hide modal after 10 seconds
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 10000);
+        }
+    </script>
+</body>
+</html>

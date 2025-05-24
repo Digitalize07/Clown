@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Circus Nightmare - Payasos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Special+Elite&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #c41e3a;
+            font-family: 'Special Elite', cursive;
+            background-image: url('/api/placeholder/100/100');
+            background-repeat: repeat;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
+                        repeating-linear-gradient(45deg, rgba(139,0,0,0.1) 0px, rgba(139,0,0,0.1) 2px, transparent 2px, transparent 4px);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Nosifer', cursive;
+            text-align: center;
+            color: #8b0000;
+            font-size: 4em;
+            text-shadow: 0 0 15px rgba(139,0,0,0.7),
+                         0 0 25px rgba(139,0,0,0.5);
+            margin: 40px 0;
+            letter-spacing: 4px;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8b0000, transparent);
+        }
+
+        .subtitle {
+            font-family: 'Creepster', cursive;
+            text-align: center;
+            color: #550000;
+            font-size: 1.5em;
+            margin-bottom: 50px;
+        }
+
+        .clown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .clown-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #400;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .clown-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(139,0,0,0.4),
+                        0 0 40px rgba(255,0,0,0.2);
+            border-color: #800;
+        }
+
+        .clown-name {
+            font-family: 'Creepster', cursive;
+            color: #c41e3a;
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(196,30,58,0.5);
+        }
+
+        .clown-image {
+            transition: filter 0.3s ease;
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 2px solid #400;
+            filter: grayscale(50%) contrast(120%) brightness(80%);
+        }
+
+        .clown-description {
+            color: #aa0000;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 1.8em;
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255,0,0,0.3);
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .blood-drip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(#8b0000, transparent);
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .warning-text {
+            color: #ff0000;
+            text-align: center;
+            font-size: 0.8em;
+            margin-top: 40px;
+            animation: flicker 2s infinite;
+        }
+        @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+        }
+        .clown-card:hover .clown-name {
+        animation: pulse 2s infinite;
+        color: #ff0000;
+        }
+        .clown-card:hover .clown-image {
+        filter: grayscale(100%) contrast(150%) brightness(70%);
+        }
+        .nav-menu {
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 3px solid #400;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(139,0,0,0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background: none;
+            border: 2px solid #600;
+            color: #c41e3a;
+            padding: 15px 25px;
+            font-family: 'Creepster', cursive;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropbtn:hover {
+            background: rgba(139,0,0,0.2);
+            border-color: #800;
+            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+            transform: scale(1.05);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            min-width: 250px;
+            border: 2px solid #400;
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            animation: dropdownAppear 0.3s ease-out;
+        }
+
+        @keyframes dropdownAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: #c41e3a;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-family: 'Special Elite', cursive;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #400;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(139,0,0,0.2);
+            color: #ff0000;
+            padding-left: 25px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Add blood drip effect to dropdown */
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(#8b0000, transparent);
+        }
+        .content-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Adjust existing container padding */
+        .container {
+            padding-top: 0;
+        }
+
+        /* Add hover effect to menu items */
+        .dropdown-content a::before {
+            content: '☠';
+            margin-right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dropdown-content a:hover::before {
+            opacity: 1;
+        }
+
+        /* Featured Clown Styles */
+        .featured-clown {
+            background: rgba(0, 0, 0, 0.95);
+            border: 4px solid #600;
+            margin: 40px auto;
+            padding: 30px;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(139,0,0,0.4);
+            border-radius: 10px;
+        }
+
+        .featured-clown::before {
+            content: '¡NUEVO!';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: #c41e3a;
+            color: #000;
+            padding: 10px 40px;
+            transform: rotate(45deg);
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            z-index: 2;
+        }
+
+        .featured-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .featured-image {
+            width: 100%;
+            height: auto;
+            min-height: 600px;
+            max-height: 900px;
+            object-fit: contain;
+            border: 3px solid #400;
+            filter: grayscale(70%) contrast(130%) brightness(70%);
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(139,0,0,0.3);
+        }
+
+        .featured-image:hover {
+            filter: grayscale(100%) contrast(150%) brightness(60%);
+            transform: scale(1.02);
+        }
+
+        .featured-info {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            height: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .featured-name {
+            font-family: 'Creepster', cursive;
+            color: #c41e3a;
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(196,30,58,0.7);
+            letter-spacing: 2px;
+        }
+
+        .featured-price {
+            font-size: 2.5em;
+            color: #ff0000;
+            text-shadow: 0 0 15px rgba(255,0,0,0.4);
+            margin: 20px 0;
+        }
+
+        .featured-blood-drip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(#8b0000, transparent);
+        }
+
+        .contact-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #8b0000, #c41e3a);
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            width: 80%;
+            text-align: center;
+        }
+
+        .contact-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .contact-button:hover::before {
+            left: 100%;
+        }
+
+        .contact-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(139,0,0,0.4);
+        }
+
+        .promo-text {
+            font-family: 'Creepster', cursive;
+            color: #ff0000;
+            font-size: 1.2em;
+            margin-top: 10px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Circo de las Pesadillas</h1>
+        <div class="subtitle">Donde tus miedos cobran vida...</div>
+
+        <div class="featured-clown">
+            <div class="featured-blood-drip"></div>
+            <div class="featured-content">
+                <img src="/img/clownc.png" alt="Payaso ClownC" class="featured-image">
+                <div class="featured-info">
+                    <h2 class="featured-name">Reaper</h2>
+                    <div class="featured-price">Precio: $0</div>
+                    <a href="reaper.html" class="contact-button">Contactar Ahora</a>
+                    <div class="promo-text">¡OFERTA ESPECIAL! - Gratis por tiempo limitado</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clown-grid">
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">Crocky</h2>
+                <img src="img/clownbn.png" alt="Payaso Sonrisas Eternas" class="clown-image">
+                <p class="clown-description">Un payaso de 1.44 metros de altura, con el cabello rojo brillante y una perturbadora obsesión: acechar y matar niños. Su apariencia inofensiva oculta su naturaleza siniestra</p>
+                <div class="price">$14,999</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">SNOOTS</h2>
+                <img src="img/CLOWNVV.png" alt="Payaso Eco de Risas" class="clown-image">
+                <p class="clown-description">Su caja musical integrada funciona sin mecanismo visible. Las melodías que toca no corresponden a ninguna canción conocida.</p>
+                <div class="price">$22,999</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">LoXXo</h2>
+                <img src="img/clownx.jpg" alt="Payaso Lágrimas de Medianoche" class="clown-image">
+                <p class="clown-description">Un payaso de 1.97 metros, proveniente de Austria, con cabello chino y una perturbadora pasión: torturar hombres. Su mirada fría y su retorcido sentido del humor lo hacen aún más aterrador</p>
+                <div class="price">$9,999</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">AZUBAH</h2>
+                <img src="img/clownv.png" alt="El Maestro de Ceremonias" class="clown-image">
+                <p class="clown-description">Recuperado de un circo que se incendió en 1891. Las fotografías tomadas de él aparecen con siluetas de espectadores inexistentes en el fondo.</p>
+                <div class="price">$16,666</div>
+            </div>
+
+            <div class="clown-card" onclick="window.location.href='ruffy.html'">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">Ruffy</h2>
+                <img src="img/clownbn2.png" alt="Payaso Sussurros del Pasado" class="clown-image">
+                <p class="clown-description">Un payaso de pelo verde con negro, que viste un disfraz de cuadros y círculos. Una mordida que puede triturar los huesos, y tiene un macabro gusto por devorar YouTubers</p>
+                <div class="price">$7,999</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">CRUNSH</h2>
+                <img src="img/clownvvv.png" alt="Payaso El Coleccionista" class="clown-image">
+                <p class="clown-description">Sus bolsillos contienen pequeños objetos que aparecen y desaparecen. Algunos pertenecieron a niños desaparecidos en los años 50.</p>
+                <div class="price">$19,333</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">Pesadilla Carmesí</h2>
+                <img src="img/crimson-nightmare.jpg" alt="Payaso Pesadilla Carmesí" class="clown-image">
+                <p class="clown-description">Su maquillaje cambia de patrón durante la noche. Los espejos cercanos a él suelen agrietarse en patrones circulares.</p>
+                <div class="price">$1,999</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">El Último Acto</h2>
+                <img src="img/final-act.jpg" alt="Payaso El Último Acto" class="clown-image">
+                <p class="clown-description">Encontrado en la bodega de un teatro abandonado. Las cortinas se mueven en su presencia, aún sin corrientes de aire.</p>
+                <div class="price">$2,222</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">Melodía Perdida</h2>
+                <img src="img/lost-melody.jpg" alt="Payaso Melodía Perdida" class="clown-image">
+                <p class="clown-description">Su organillo produce música que induce estados de trance. Varios compradores reportaron despertar en lugares diferentes sin recordar cómo llegaron.</p>
+                <div class="price">$1,777</div>
+            </div>
+
+            <div class="clown-card">
+                <div class="blood-drip"></div>
+                <h2 class="clown-name">El Vigilante Nocturno</h2>
+                <img src="img/night-watcher.jpg" alt="Payaso El Vigilante Nocturno" class="clown-image">
+                <p class="clown-description">Cada mañana aparece en una posición diferente a la que fue dejado. Las mascotas se niegan a entrar en habitaciones donde él está presente.</p>
+                <div class="price">$2,666</div>
+            </div>
+        </div>
+
+        <div class="warning-text">
+            ⚠ ADVERTENCIA: No nos hacemos responsables por acontecimientos paranormales posteriores a la compra ⚠
+        </div>
+    </div>
+</body>
+</html>

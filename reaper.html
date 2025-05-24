@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reaper - El Payaso de las Sombras</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Special+Elite&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #c41e3a;
+            font-family: 'Special Elite', cursive;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .blood-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(139,0,0,0.2));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Nosifer', cursive;
+            font-size: 4em;
+            text-align: center;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255,0,0,0.5),
+                         0 0 40px rgba(255,0,0,0.3);
+            margin-bottom: 40px;
+            animation: flicker 5s infinite;
+        }
+
+        .clown-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin: 0 auto 40px;
+            display: block;
+            border: 5px solid #400;
+            box-shadow: 0 0 30px rgba(255,0,0,0.3);
+            filter: grayscale(70%) contrast(130%) brightness(70%);
+        }
+
+        .story {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #bb0000;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px rgba(187,0,0,0.3);
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #400;
+        }
+
+        .order-button {
+            display: block;
+            width: 80%;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 25px;
+            font-family: 'Creepster', cursive;
+            font-size: 2.5em;
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+        }
+
+        .order-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,0,0,0.5);
+        }
+
+        .order-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+        }
+
+        .order-form {
+            position: relative;
+            background: #1a0000;
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            border: 3px solid #800;
+            box-shadow: 0 0 50px rgba(255,0,0,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(255,0,0,0.3);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 2px solid #600;
+            color: #ff0000;
+            font-family: 'Special Elite', cursive;
+            font-size: 1.2em;
+        }
+
+        .submit-order {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: #600;
+            border: none;
+            color: #fff;
+            font-family: 'Creepster', cursive;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .submit-order:hover {
+            background: #800;
+            transform: scale(1.02);
+        }
+
+        .terror-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 2000;
+            animation: terrorFade 3s forwards;
+        }
+
+        .terror-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0000;
+            font-family: 'Nosifer', cursive;
+            font-size: 4em;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255,0,0,0.7);
+            opacity: 0;
+            animation: textAppear 3s forwards;
+        }
+
+        @keyframes terrorFade {
+            0% { background: #000; }
+            50% { background: #400; }
+            100% { background: #000; }
+        }
+
+        @keyframes textAppear {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .static-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/img/clownc.png') center/cover;
+            opacity: 0;
+            z-index: 2001;
+            animation: staticFade 3s forwards;
+        }
+
+        @keyframes staticFade {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .contact-info {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #400;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .contact-info h2 {
+            font-family: 'Creepster', cursive;
+            color: #ff0000;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+        }
+
+        .contact-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            padding: 15px;
+            background: rgba(139,0,0,0.1);
+            border: 1px solid #600;
+        }
+
+        .contact-item h3 {
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .contact-item p {
+            color: #bb0000;
+            font-size: 1.1em;
+        }
+
+        .button {
+            display: block;
+            width: 300px;
+            margin: 30px auto;
+            padding: 20px;
+            font-family: 'Creepster', cursive;
+            font-size: 2em;
+            text-align: center;
+            color: #fff;
+            background: #8b0000;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background: #ff0000;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255,0,0,0.5);
+        }
+
+        .warning {
+            color: #ff0000;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 40px;
+            animation: flicker 2s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .shadow-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                                      transparent 0%, 
+                                      rgba(0,0,0,0.95) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="blood-overlay"></div>
+    <div class="shadow-effect"></div>
+    
+    <div class="container">
+        <h1>Reaper</h1>
+        
+        <img src="/img/clownc.png" alt="Reaper el payaso" class="clown-image">
+        
+        <div class="story">
+            <p>De este payaso no hay fotos, no hay videos, ni una sola imagen. Solo su nombre, y una advertencia: "Nunca sabrás que ya está cerca."</p>
+            <p>Se dice que no es humano, ya que varias de sus víctimas aseguran haberlo visto de un lugar a otro en milésimas de segundo.</p>
+            <p>No usa ropa de payaso, para que no lo puedas ver fácilmente, usa colores que se camuflajean con la oscuridad, por lo que cuando por fin puedes verlo, ya es demasiado tarde.</p>
+            <p>Contratarlo no es sencillo. No hay precio fijo. No pide dinero. Solo te escribe un mensaje:</p>
+            <p>"Dame una razón para ir."</p>
+            <p>Lo demás... ya no está en tus manos.</p>
+        </div>
+
+        <button class="order-button" onclick="showOrderModal()">ORDENAR AHORA</button>
+
+        <a href="Pg.html" class="button">Volver al Catálogo</a>
+        
+        <p class="warning">⚠ ADVERTENCIA: No nos hacemos responsables por desapariciones o transformaciones en sombras ⚠</p>
+    </div>
+
+    <div id="orderModal" class="order-modal">
+        <div class="order-form">
+            <h2 style="color: #ff0000; font-family: 'Creepster', cursive; font-size: 2.5em; text-align: center; margin-bottom: 30px;">Ordenar Visita</h2>
+            <form id="orderForm" onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label>Dirección de la Visita</label>
+                    <input type="text" required placeholder="Donde quieres que te visite...">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de la Visita</label>
+                    <input type="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Hora de la Visita</label>
+                    <input type="time" required>
+                </div>
+                <button type="submit" class="submit-order">CONFIRMAR ORDEN</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="terrorAnimation" class="terror-animation">
+        <div class="terror-text">TU ALMA ME PERTENECE AHORA</div>
+        <div class="static-image"></div>
+    </div>
+
+    <script>
+        // Efecto de sombra que sigue al cursor
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            document.documentElement.style.setProperty('--x', `${x}%`);
+            document.documentElement.style.setProperty('--y', `${y}%`);
+        });
+
+        // Efecto de parpadeo aleatorio
+        setInterval(() => {
+            document.body.style.animation = 'flicker 0.1s';
+            setTimeout(() => {
+                document.body.style.animation = '';
+            }, 100);
+        }, Math.random() * 5000 + 2000);
+
+        function showOrderModal() {
+            document.getElementById('orderModal').style.display = 'block';
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('terrorAnimation').style.display = 'block';
+            
+            // Reproducir sonido de terror (si está disponible)
+            const audio = new Audio('data:audio/wav;base64,UklGRl9vT19');
+            audio.play().catch(e => console.log('Audio blocked'));
+            
+            // Cerrar la página después de la animación
+            setTimeout(() => {
+                window.close();
+            }, 3000);
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('orderModal')) {
+                document.getElementById('orderModal').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 
