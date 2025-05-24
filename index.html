@@ -433,9 +433,170 @@
             text-align: center;
             text-shadow: 0 0 10px rgba(255,0,0,0.3);
         }
+
+        /* Estilos para el modal de advertencia */
+        .warning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .warning-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a0000;
+            padding: 40px;
+            border: 3px solid #800;
+            box-shadow: 0 0 50px rgba(255,0,0,0.3);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .warning-title {
+            font-family: 'Nosifer', cursive;
+            color: #ff0000;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(255,0,0,0.5);
+        }
+
+        .warning-text-large {
+            font-family: 'Creepster', cursive;
+            color: #c41e3a;
+            font-size: 1.8em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(196,30,58,0.3);
+        }
+
+        .access-code {
+            font-family: 'Special Elite', cursive;
+            color: #ff0000;
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px;
+            background: #000;
+            border: 2px solid #600;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .password-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            margin: 20px auto;
+            background: #000;
+            border: 2px solid #600;
+            color: #ff0000;
+            font-family: 'Special Elite', cursive;
+            font-size: 1.2em;
+            text-align: center;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+        }
+
+        .error-message {
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(255,0,0,0.3);
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .attempts-left {
+            color: #c41e3a;
+            font-family: 'Special Elite', cursive;
+            font-size: 1em;
+            margin: 10px 0;
+            text-shadow: 0 0 5px rgba(196,30,58,0.3);
+        }
+
+        .accept-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #8b0000, #c41e3a);
+            color: #000;
+            padding: 20px 40px;
+            border: none;
+            font-family: 'Creepster', cursive;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .accept-button.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .accept-button.active:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,0,0,0.5);
+        }
+
+        .blood-drip-warning {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(#8b0000, transparent);
+        }
     </style>
 </head>
 <body>
+    <!-- Modal de Advertencia -->
+    <div id="warningModal" class="warning-modal">
+        <div class="warning-content">
+            <div class="blood-drip-warning"></div>
+            <h1 class="warning-title">⚠ ADVERTENCIA ⚠</h1>
+            <p class="warning-text-large">
+                Este sitio contiene material perturbador y no es un juego.<br>
+                Solo para mayores de 18 años.<br>
+                El contenido puede causar ansiedad, miedo y trastornos del sueño.<br>
+                Proceder bajo su propia responsabilidad.
+            </p>
+            <div class="access-code">
+                Ingresa la Clave de Acceso
+            </div>
+            <input type="password" id="accessCode" class="password-input" placeholder="Clave de Acceso" maxlength="20">
+            <div id="errorMessage" class="error-message">
+                Clave incorrecta. Intenta de nuevo...
+            </div>
+            <div id="attemptsLeft" class="attempts-left">
+                No juegues con NOSOTROS o NOSOTROS jugaremos CONTIGO
+            </div>
+            <button id="acceptButton" class="accept-button" onclick="validateAccess()">ACEPTAR Y ENTRAR</button>
+        </div>
+    </div>
+
     <div class="container">
         <h1>Circo de las Pesadillas</h1>
         <div class="subtitle">Donde tus miedos cobran vida...</div>
@@ -539,5 +700,73 @@
             ⚠ ADVERTENCIA: No nos hacemos responsables por acontecimientos paranormales posteriores a la compra ⚠
         </div>
     </div>
+
+    <script>
+        let attempts = 3;
+        const correctCode = "A9#dL7!xQp@2Zm$R3e";
+        const acceptButton = document.getElementById('acceptButton');
+        const accessCodeInput = document.getElementById('accessCode');
+        const errorMessage = document.getElementById('errorMessage');
+        const attemptsLeft = document.getElementById('attemptsLeft');
+
+        // Mostrar el modal de advertencia al cargar la página
+        window.onload = function() {
+            document.getElementById('warningModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Validar el código de acceso mientras se escribe
+        accessCodeInput.addEventListener('input', function() {
+            if (this.value === correctCode) {
+                acceptButton.classList.add('active');
+                errorMessage.style.display = 'none';
+            } else {
+                acceptButton.classList.remove('active');
+            }
+        });
+
+        function validateAccess() {
+            const inputCode = accessCodeInput.value;
+            
+            if (inputCode === correctCode) {
+                document.getElementById('warningModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+                
+                // Efecto de transición
+                document.body.style.animation = 'flicker 0.2s infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 500);
+            } else {
+                attempts--;
+                attemptsLeft.textContent = `Intentos restantes: ${attempts}`;
+                errorMessage.style.display = 'block';
+                accessCodeInput.value = '';
+                acceptButton.classList.remove('active');
+
+                // Efecto de error
+                document.getElementById('warningModal').style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    document.getElementById('warningModal').style.animation = '';
+                }, 500);
+
+                if (attempts <= 0) {
+                    // Bloquear el acceso después de 3 intentos fallidos
+                    accessCodeInput.disabled = true;
+                    acceptButton.disabled = true;
+                    errorMessage.textContent = "Demasiados intentos fallidos. El acceso ha sido bloqueado.";
+                    errorMessage.style.display = 'block';
+                    attemptsLeft.style.display = 'none';
+                }
+            }
+        }
+
+        // Prevenir el cierre del modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('warningModal').style.display === 'block') {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
